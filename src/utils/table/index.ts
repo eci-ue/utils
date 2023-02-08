@@ -21,13 +21,18 @@ interface UsePagination {
 export const usePagination = function<T>(size: number = 10, useState?: UseAsyncStateReturn<T, true>): UsePagination & UseAsyncStateReturn<T, true> {
   const current = ref<number>(1);
   const pageSize = ref<number>(size);
-  const total = computed<number>(() => {
-    // @ts-ignore
-    return state.value.total || 0;
-  });
-  
   if (useState) {
     const { state, execute, ...data } = useState;
+    const total = computed<number>({
+      get: () => {
+        // @ts-ignore
+        return state.value.total || 0;
+      },
+      set: (value: number) => {
+        // @ts-ignore
+        state.value.total = value;
+      }
+    });
     const callback = function(delay?: number, ...args: any[]) {
       const query = {
         total: total.value,
@@ -51,6 +56,7 @@ export const usePagination = function<T>(size: number = 10, useState?: UseAsyncS
     });
     return { ...data, state, execute: callback, current, pageSize, pagination, total };
   } else {
+    const total = ref<number>(0);
     const pagination = computed<TablePaginationConfig>(function() {
       return {
         current: current.value,
