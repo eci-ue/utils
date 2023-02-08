@@ -37,7 +37,7 @@ export default defineConfig({
     manifest: false,
     rollupOptions: {
       external: [
-        /uuid/i,
+        /^uuid/i,
         /lodash/i,
         /dayjs/i,
         /bignumber\.js/i,
