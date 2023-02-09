@@ -4,7 +4,7 @@
  * @documentation https://www.npmjs.com/package/@js-lion/api
  */
 
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { toRaw } from "vue";
 import { PageResult } from "../api";
 import { useAsyncState } from "@vueuse/core";

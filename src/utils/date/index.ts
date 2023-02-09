@@ -42,11 +42,11 @@ export const toDate = function(value: DateValue, template?: string): Date {
  * @param format 格式化格式
  */
 const __format = function(value?: DateValue | null | undefined, template: string | Template = Template.value): string {
-  if (dayjs.isDayjs(value)) {
-    return value.format(template);
+  if (typeof value === "object" && dayjs.isDayjs(value)) {
+    return typeof template === "string" ? value.format(template) : value.format(Template.value);
   }
   const date = dayjs(toDate(value || new Date()));
-  return __format(date, template);
+  return __format(date, typeof template === "string" ? template : Template.value);
 }
 
 /**

@@ -1,22 +1,42 @@
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { ref, computed } from "vue";
-
-import type { Ref, ComputedRef } from "vue";
+import type { UsePagination, UseSelection } from "./props";
 import type { UseAsyncStateReturn } from "@vueuse/core";
 import type { TableProps, TablePaginationConfig } from "ant-design-vue";
 
-export interface UsePaginationData {
-  current: number;
-  total: number;
-  pageSize: number;
-}
 
-interface UsePagination {
-  current: Ref<number>;
-  total: Ref<number>;
-  pageSize: Ref<number>;
-  pagination: ComputedRef<TablePaginationConfig>;
-}
+export const useSelection = function<T>(): UseSelection<T>  {
+  const selected: any = ref<T[]>([]);
+  const selectedKeys = ref<Array<string | number>>([]);
+  const onChange: any = function(keys: string[], rows: T[]): void {
+    selected.value = rows as any;
+    selectedKeys.value = keys;
+  };
+
+  const rowSelection: TableProps['rowSelection'] = {
+    onChange,
+    selectedRowKeys: selectedKeys as any,
+    getCheckboxProps: function(record: T) {
+      return {
+        disabled: _.get<T, string>(record, "disabled") || false,
+        name: _.get<T, string>(record, "key"),
+      }
+    },
+  };
+
+  const onClearSelected = function() {
+    selected.value = [];
+    selectedKeys.value = [];
+  }
+
+  return {
+    selected,
+    selectedKeys,
+    rowSelection, 
+    onClearSelected,
+  };
+};
+
 
 export const usePagination = function<T>(size: number = 10, useState?: UseAsyncStateReturn<T, true>): UsePagination & UseAsyncStateReturn<T, true> {
   const current = ref<number>(1);
@@ -69,34 +89,3 @@ export const usePagination = function<T>(size: number = 10, useState?: UseAsyncS
   }
 }
 
-export const useSelection = function<T>()  {
-  const selected = ref<T[]>([]);
-  const selectedKeys = ref<Array<string | number>>([]);
-  const onChange = function(selectedRowKeys: string[], selectedRows: T[]): void {
-    selected.value = selectedRows as any;
-    selectedKeys.value = selectedRowKeys;
-  };
-
-  const rowSelection: TableProps['rowSelection'] = {
-    onChange: onChange as any,
-    selectedRowKeys: selectedKeys as any,
-    getCheckboxProps: function(record: T) {
-      return {
-        disabled: _.get<T, string>(record, "disabled") || false,
-        name: _.get<T, string>(record, "key"),
-      }
-    },
-  };
-
-  const onClearSelected = function() {
-    selected.value = [];
-    selectedKeys.value = [];
-  }
-
-  return {
-    selected,
-    selectedKeys,
-    rowSelection, 
-    onClearSelected,
-  };
-};

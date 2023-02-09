@@ -3,7 +3,7 @@
  * @author svon.me@gmail.com
  */
 
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { v1 as uuidV1, v4 as uuidV4, v5 as uuidV5 } from "uuid";
 
 // 生成唯一值

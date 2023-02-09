@@ -41,7 +41,7 @@ export default defineConfig({
         /lodash/i,
         /dayjs/i,
         /bignumber\.js/i,
-        /vue/i,
+        /^vue/i,
         /ant-design-vue/i
       ],
       output: {

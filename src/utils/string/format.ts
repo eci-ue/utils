@@ -3,7 +3,7 @@
  * @author svon.me@gmail.com
  */
 
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import BigNumber from "bignumber.js";
 
 export const isZero = function(value?: string | number | BigNumber): boolean {
