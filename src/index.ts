@@ -15,4 +15,5 @@ export * as useState from "./utils/http";
 
 export * from "./utils/api";
 export * from "./utils/uuid";
+export * from "./utils/lazyload";
 export * from "./utils/string/format";
