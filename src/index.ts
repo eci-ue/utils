@@ -3,17 +3,17 @@
  * @author svon.me@gmail.com
  */
 
-export * as date from "./utils/date";
+export * as date from "./date";
 
-export * as table from "./utils/table";
+export * as table from "./table";
 
-export * as path from "./utils/path";
+export * as path from "./path";
 
-export * as rule from "./utils/rule";
+export * as rule from "./rule";
 
-export * as useState from "./utils/http";
+export * as useState from "./http";
 
-export * from "./utils/api";
-export * from "./utils/uuid";
-export * from "./utils/lazyload";
-export * from "./utils/string/format";
+export * from "./api";
+export * from "./uuid";
+export * from "./lazyload";
+export * from "./string/format";
