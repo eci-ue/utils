@@ -13,7 +13,9 @@ export * as rule from "./rule";
 
 export * as useState from "./http";
 
+export * as icon from "./icon";
+
 export * from "./api";
 export * from "./uuid";
+export * from "./common";
 export * from "./lazyload";
-export * from "./string/format";
