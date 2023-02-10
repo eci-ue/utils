@@ -48,5 +48,15 @@ export default defineConfig({
         inlineDynamicImports: true
       }
     }
-  }
+  },
+  server: {
+    port: 9008,
+    host: "0.0.0.0",
+    https: false,
+    hmr: {
+      protocol: 'ws',
+      host: '127.0.0.1',
+      port: 9008,
+    }
+  },
 })

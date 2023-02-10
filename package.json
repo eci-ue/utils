@@ -1,12 +1,13 @@
 {
   "name": "@ue/utils",
   "private": false,
-  "version": "0.1.3",
+  "version": "0.1.5",
   "type": "module",
   "types": "types/index.d.ts",
   "license": "MIT",
   "main": "dist/utils",
   "scripts": {
+    "dev": "vite",
     "build": "vue-tsc && vite build",
     "types": "vue-tsc --jsx preserve --declaration --noEmit false --emitDeclarationOnly --declarationDir ./types ./src/index"
   },
