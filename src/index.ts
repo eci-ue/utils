@@ -15,6 +15,8 @@ export * as useState from "./http";
 
 export * as icon from "./icon";
 
+export * as check from "./check";
+
 export * from "./api";
 export * from "./uuid";
 export * from "./common";

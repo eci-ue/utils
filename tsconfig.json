@@ -1,19 +1,36 @@
 {
   "compilerOptions": {
-    "outDir": "build",
-    "target": "ESNext",
+    "outDir": "dist",
+    "allowJs": true,
+    "baseUrl": ".",
+    "target": "esnext",
+    "isolatedModules": true,
     "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "esnext",
+    "moduleResolution": "node",
     "strict": true,
     "jsx": "preserve",
+    "sourceMap": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ES5", "dom"],
+    "incremental": true,
     "skipLibCheck": true,
-    "noEmit": true,
+    "noUnusedLocals": false,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "noEmitOnError": true,
+    "skipDefaultLibCheck": true,
+    "preserveConstEnums": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@fengqiaogang"
+    ],
     "paths": {
       "src/*": ["./src/*"],
       "types/*": ["./types/*"]
@@ -26,9 +43,10 @@
     "test/**/*.tsx",
     "types/**/*.ts",
     "types/**/*.dts",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "vite.config.ts"
   ],
-  "references": [
-    { "path": "./tsconfig.node.json" }
+  "exclude": [
+    "node_modules", "dist"
   ]
 }
