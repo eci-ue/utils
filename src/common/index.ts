@@ -4,6 +4,7 @@
  */
 
 import * as _ from "lodash-es";
+import * as path from "../path";
 import BigNumber from "bignumber.js";
 
 export const isZero = function(value?: string | number | BigNumber): boolean {
@@ -45,3 +46,31 @@ export const toNumberCash = function (value: string | number = 0, unit = "", pre
   const text = data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return valueFormat(text, unit, prefix);
 };
+
+
+let downloadPrefix = "/download";
+
+export const setfileDownloadUrl = function(value: string): void {
+  downloadPrefix = value;
+}
+
+// 拼接文件下载地址
+export const fileDownloadUrl = function(url: string) {
+  return path.join(downloadPrefix, url);
+}
+
+// 触发浏览器下载
+export const downloadFile = function(url: string, name?: string): void {
+  // 多文件同时下载，最好和网页保持一个相同域名
+  // 前端服务器使用 Nginx 部署，nginx 监听 /download 路径进行反代理
+  const a = document.createElement("a");
+  // initEvent 已不推荐使用
+  // 后期如遇到问题请参考 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/Event
+  const event = document.createEvent("MouseEvents");
+  event.initEvent("click", false, false);
+  a.href = url;
+  if (name) {
+    a.download = name;
+  }
+  a.dispatchEvent(event);
+}
