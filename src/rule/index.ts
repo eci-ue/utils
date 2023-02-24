@@ -4,73 +4,59 @@
  * @description https://github.com/yiminghe/async-validator
  */
 
+import * as _ from "lodash-es";
 import type { RuleObject } from "ant-design-vue/lib/form/interface";
 
-export const text = function(message: string = "Please input", required:boolean = true): RuleObject[] {
+export type Transform = (value: any) => any;
+
+export const text = function(message: string = "Please input", required:boolean = true, transform?: Transform): RuleObject[] {
   return [
     { 
       required, 
       message,
       trigger: ["blur"],
-      transform (value: string | number) {
-        if(value || value === 0) {
-          return String(value);
-        }
-      }
+      transform: transform || toString
     }
   ];
 }
 
-export const integer = function(message: string = "Please input", required: boolean = true): RuleObject[] {
-  return [
-    { 
-      type: "number",
-      required, 
-      message,
-      trigger: ["blur"],
-      transform (value: string) {
-        if (value && /^\d+$/i.test(value)) {
-          return Number(value);
-        }
-      }
-    }
-  ];
-}
-
-export const number = function(message: string = "Please input", required: boolean = true): RuleObject[] {
+export const integer = function(message: string = "Please input", required:boolean = true, transform?: Transform): RuleObject[] {
   return [
     { 
       type: "number",
       required, 
       message,
       trigger: ["blur"],
-      transform (value: string) {
-        if (value && /^\d{1,}(\.\d{1,})?$/i.test(value)) {
-          return Number(value);
-        }
-        return value;
-      }
+      transform: transform || toInteger
     }
   ];
 }
 
-export const link = function(message: string = "Please input link", required: boolean = true): RuleObject[] {
+export const number = function(message: string = "Please input", required:boolean = true, transform?: Transform): RuleObject[] {
+  return [
+    { 
+      type: "number",
+      required, 
+      message,
+      trigger: ["blur"],
+      transform: transform || toNumber
+    }
+  ];
+}
+
+export const link = function(message: string = "Please input link", required:boolean = true, transform?: Transform): RuleObject[] {
   return [
     { 
       required, 
       message,
       type: "url",
       trigger: ["blur"],
-      transform (value: string | number) {
-        if(value || value === 0) {
-          return String(value);
-        }
-      }
+      transform: transform || toString
     }
   ];
 }
 
-export const array = function(message: string = "Please select", required: boolean = true): RuleObject[] {
+export const array = function(message: string = "Please select", required:boolean = true, transform?: Transform): RuleObject[] {
   return [
     { 
       required, 
@@ -78,6 +64,7 @@ export const array = function(message: string = "Please select", required: boole
       type: "array",
       trigger: ["blur"],
       min: 1,
+      transform,
       validator(rule: RuleObject, value: any[]) {
         if (value && Array.isArray(value) && value.length > 0) {
           return Promise.resolve();
@@ -88,19 +75,65 @@ export const array = function(message: string = "Please select", required: boole
   ];
 }
 
-export const date = function(message: string = "Please input", required: boolean = true): RuleObject[] {
+export const date = function(message: string = "Please input", required:boolean = true, transform?: Transform): RuleObject[] {
   return [
     { 
       type: "date",
       required, 
       message,
       trigger: ["blur"],
-      transform(value: string) {
-        if (value) {
-          return new Date(value);
+      transform: transform || toDate,
+    }
+  ];
+}
+
+export const noSpace = function(message: string = "不能包含空格", required: boolean = true, transform?: Transform): RuleObject[] {
+  return [
+    { 
+      required, 
+      message,
+      transform,
+      trigger: ["blur"],
+      validator(rule: RuleObject, value: string) {
+        if (/\s/g.test(value)) {
+          return Promise.reject(message);
         }
-        return null;
+        return Promise.resolve();
       },
     }
   ];
+}
+
+export const toString = function(value: string | number) {
+  if(value || value === 0) {
+    if (typeof value === "string" || typeof value === "number") {
+      return String(value);
+    }
+  }
+  return value;
+};
+
+export const toNumber = function(value: string) {
+  if (value && /^\d{1,}(\.\d{1,})?$/i.test(value)) {
+    return _.toNumber(value);
+  }
+  return value;
+}
+
+export const toInteger = function(value: string) {
+  if (value && /^\d+$/i.test(value)) {
+    return _.toNumber(value);
+  }
+};
+
+export const toDate = function(value: string) {
+  if (value) {
+    return new Date(value);
+  }
+  return null;
+}
+
+
+export const concat = function(...args: RuleObject[] | RuleObject[][]): RuleObject[] {
+  return _.flattenDeep(args);
 }

@@ -2,10 +2,13 @@
  * @file 常用时间方法
  * @author svon.me@gmail.com
  */
-
+// @ts-ignore
+import dayjs from "dayjs";
 import BigNumber from "bignumber.js";
-import dayjs, { Dayjs } from "dayjs";
+// @ts-ignore
 import utc from "dayjs/plugin/utc";
+
+import type { Dayjs } from "dayjs";
 
 dayjs.extend(utc);
 
@@ -22,6 +25,7 @@ export enum Template {
 
 export const toDate = function(value: DateValue, template?: string): Date {
   if (dayjs.isDayjs(value)) {
+    // @ts-ignore
     return value.toDate();
   }
   // 将 10 位时间戳转换成 13 位时间戳
@@ -43,6 +47,7 @@ export const toDate = function(value: DateValue, template?: string): Date {
  */
 const __format = function(value?: DateValue | null | undefined, template: string | Template = Template.value): string {
   if (typeof value === "object" && dayjs.isDayjs(value)) {
+    // @ts-ignore
     return typeof template === "string" ? value.format(template) : value.format(Template.value);
   }
   const date = dayjs(toDate(value || new Date()));
