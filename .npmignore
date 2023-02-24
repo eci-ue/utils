@@ -10,4 +10,6 @@ tsconfig.json
 vite.config.js
 types/shims-vue.d.ts
 pnpm-lock.yaml
+yarn.lock
+npm-shrinkwrap.json
 index.html
