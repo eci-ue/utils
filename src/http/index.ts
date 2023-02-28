@@ -29,7 +29,7 @@ const listNormalize = function<T>(list: T[], tableId: string = "id") {
 };
 
 export const data = function<T = any, Shallow extends boolean = true>(
-  api: Promise<T> | ((...args: any[]) => Promise<T>), 
+  api: Promise<T> | ((...args: any[]) => Promise<T>),
   initialState?: T, 
   options?: UseAsyncStateOptions<Shallow>
 ): UseStateResult<T, any, Shallow> {
@@ -53,11 +53,11 @@ export const dataExecute = function<T = any, Shallow extends boolean = true>(
 }
 
 export const list = function<T = any, Shallow extends boolean = true>(
-  api: Promise<PageResult<T>> | ((...args: any[]) => Promise<PageResult<T>>), 
+  api: Promise<PageResult<T>> | ((...args: any[]) => Promise<PageResult<T>>) | PageResult<T>, 
   initialState?: PageResult<T>, 
   options?: UseAsyncStateOptions<Shallow>,
   tableId?: string
-): UseAsyncStateReturn<T, any, Shallow> {
+): UseAsyncStateReturn<PageResult<T>, any, Shallow> {
   const value = initialState || {
     total: 0,
     results: []
@@ -91,6 +91,6 @@ export const listExecute = function<T = any, Shallow extends boolean = true>(
     immediate: false,
     resetOnExecute: false
   }
-): UseAsyncStateReturn<T, any, Shallow> {
+): UseAsyncStateReturn<PageResult<T>, any, Shallow> {
   return list(api, initialState, options);
 }
