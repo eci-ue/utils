@@ -8,8 +8,11 @@ import * as _ from "lodash-es";
 import { toRaw } from "vue";
 import { PageResult } from "../api";
 import { useAsyncState } from "@vueuse/core";
-import type { UseAsyncStateOptions } from "@vueuse/core";
+import type { UseAsyncStateOptions, UseAsyncStateReturn } from "@vueuse/core";
 
+interface UseStateResult<Data, Params extends any[], Shallow extends boolean = true> extends UseAsyncStateReturn<Data, Params, Shallow>{
+  setState?: (value: Data) => void
+}
 
 const listNormalize = function<T>(list: T[], tableId: string = "id") {
   return _.map(list, function(item: T) {
@@ -29,14 +32,13 @@ export const data = function<T = any, Shallow extends boolean = true>(
   api: Promise<T> | ((...args: any[]) => Promise<T>), 
   initialState?: T, 
   options?: UseAsyncStateOptions<Shallow>
-) {
-  // @ts-ignore
-  const value = useAsyncState<T>(api, initialState || {}, options);
+): UseStateResult<T, any, Shallow> {
+  const value = useAsyncState<T>(api, (initialState || {}) as any, options as any);
   const setState = function<V = T>(state: V) {
     const data = toRaw(value.state.value);
     value.state.value = { ...data, ...state };
   };
-  return { ...value, setState };
+  return { ...value, setState } as any;
 };
 
 export const dataExecute = function<T = any, Shallow extends boolean = true>(
@@ -46,7 +48,7 @@ export const dataExecute = function<T = any, Shallow extends boolean = true>(
     immediate: false,
     resetOnExecute: false
   }
-) {
+): UseStateResult<T, any, Shallow> {
   return data<T, Shallow>(api, initialState, options);
 }
 
@@ -55,7 +57,7 @@ export const list = function<T = any, Shallow extends boolean = true>(
   initialState?: PageResult<T>, 
   options?: UseAsyncStateOptions<Shallow>,
   tableId?: string
-) {
+): UseAsyncStateReturn<T, any, Shallow> {
   const value = initialState || {
     total: 0,
     results: []
@@ -89,6 +91,6 @@ export const listExecute = function<T = any, Shallow extends boolean = true>(
     immediate: false,
     resetOnExecute: false
   }
-) {
+): UseAsyncStateReturn<T, any, Shallow> {
   return list(api, initialState, options);
 }

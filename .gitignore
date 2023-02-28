@@ -85,7 +85,9 @@ typings/
 dist
 types/*
 !types/shims-vue.d.ts
-
+npm-shrinkwrap.json
+yalc.lock
+yarn.lock
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and *not* Next.js
