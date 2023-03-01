@@ -1,9 +1,10 @@
 import * as _ from "lodash-es";
 import { ref, computed } from "vue";
+import type { Ref } from "vue";
 import type { UsePagination, UseSelection } from "./props";
 import type { UseAsyncStateReturn } from "@vueuse/core";
+import type { RouteLocationNormalizedLoaded } from "vue-router";
 import type { TableProps, TablePaginationConfig } from "ant-design-vue";
-
 
 export const useSelection = function<T>(): UseSelection<T>  {
   const selected: any = ref<T[]>([]);
@@ -37,10 +38,22 @@ export const useSelection = function<T>(): UseSelection<T>  {
   };
 };
 
+export const usePagination = function<T, Shallow extends boolean = true>(
+  value: number | RouteLocationNormalizedLoaded = 10, 
+  useState?: UseAsyncStateReturn<T, any, Shallow>
+): UsePagination & UseAsyncStateReturn<T, any, Shallow> {
+  let current: Ref<number>;
+  let pageSize: Ref<number>;
+  if (typeof value === "object") {
+    const page = value.query?.page || 1;
+    const limit = value.query?.limit || 10;
+    current = ref<number>(Number(page));
+    pageSize = ref<number>(Number(limit));
+  } else {
+    current = ref<number>(1);
+    pageSize = ref<number>(value);
+  }
 
-export const usePagination = function<T>(size: number = 10, useState?: UseAsyncStateReturn<T, true>): UsePagination & UseAsyncStateReturn<T, true> {
-  const current = ref<number>(1);
-  const pageSize = ref<number>(size);
   if (useState) {
     const { state, execute, ...data } = useState;
     const total = computed<number>({
