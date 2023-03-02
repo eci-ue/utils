@@ -45,7 +45,7 @@ export const toDate = function(value: DateValue, template?: string): Date {
  * @param value  时间
  * @param format 格式化格式
  */
-const __format = function(value?: DateValue | null | undefined, template: string | Template = Template.value): string {
+export const __format = function(value?: DateValue | null | undefined, template: string | Template = Template.value): string {
   if (typeof value === "object" && dayjs.isDayjs(value)) {
     // @ts-ignore
     return typeof template === "string" ? value.format(template) : value.format(Template.value);
@@ -62,7 +62,7 @@ const __format = function(value?: DateValue | null | undefined, template: string
  * 默认为 YYYY-MM-DD hh:mm:ss
  * @param formatDate
  */
-const _format = function(value: DateValue, formatDate?: boolean | string) {
+export const _format = function(value: DateValue, formatDate?: boolean | string) {
   let template: string;
   if (typeof formatDate === "boolean" && formatDate) {
     template = Template.date;
