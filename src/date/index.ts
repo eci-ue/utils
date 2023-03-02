@@ -37,7 +37,20 @@ export const toDate = function(value: DateValue, template?: string): Date {
   if (/^\d{13}$/.test(String(value))) {
     return dayjs.utc(value as string).toDate();
   }
+  if (/^\d+-\d+-\d+\s+\d+:\d+:\d+\s?$/.test(String(value))) {
+    // 判断年月日 时分秒
+    return dayjs.utc(value, Template.value).toDate();
+  }
+  if (/^\d+-\d+-\d+T\d+:\d+:\d+\s?$/i.test(String(value))) {
+    // 判断年月日T时分秒
+    return dayjs.utc(value, Template.value).toDate();
+  }
+  if (/^\d+-\d+-\d+\s?$/) {
+    // 判断年月日
+    return dayjs.utc(value, Template.date).toDate();
+  }
   return dayjs.utc(value, template).toDate();
+  
 }
 
 /**
@@ -66,7 +79,7 @@ export const _format = function(value: DateValue, formatDate?: boolean | string)
   let template: string;
   if (typeof formatDate === "boolean" && formatDate) {
     template = Template.date;
-  } else if (typeof formatDate === "string" && formatDate) {
+  } else if (typeof formatDate === "string" && formatDate.trim().length > 0) {
     template = formatDate;
   } else {
     template = Template.value;
