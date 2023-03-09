@@ -4,6 +4,8 @@
 .npmrc
 .git
 src
+docs
+test
 scripts
 node_modules
 tsconfig.json

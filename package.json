@@ -1,7 +1,7 @@
 {
   "name": "@ue/utils",
   "private": false,
-  "version": "0.2.21",
+  "version": "0.2.22",
   "type": "module",
   "types": "types/index.d.ts",
   "license": "MIT",
