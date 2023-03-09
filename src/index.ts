@@ -3,7 +3,9 @@
  * @author svon.me@gmail.com
  */
 
-export * as hook from "./hook/index";
+import { before, after } from "./hook/index";
+
+export type { HookFunction } from "./hook/index";
 
 export * as date from "./date";
 
@@ -20,3 +22,5 @@ export * as icon from "./icon";
 export * as check from "./check";
 
 export * from "./util"
+
+export const hook = { before, after };
