@@ -7,16 +7,24 @@ export type HookFunction = (...args: any[]) => undefined | Boolean | Promise<boo
 
 const hook = function(hookFunctionList: HookFunction[]) {
   return async function(...args: any[]) {
+    let flag = true;
     for (const callback of hookFunctionList) {
       if (callback && typeof callback === "function") {
         const status = await Promise.resolve(callback(...args));
         if (status) {
           continue;
         }
+        flag = false;
         break;
       }
     }
+    return flag;
   };
+}
+
+export const run = function(hookFunctionList: HookFunction[], args: any[]) {
+  const app = hook(hookFunctionList);
+  return app(...args);
 }
 
 
