@@ -3,7 +3,7 @@
  * @author svon.me@gmail.com
  */
 
-import { before, after } from "./hook/index";
+import { before, after, run } from "./hook/index";
 
 export type { HookFunction } from "./hook/index";
 
@@ -23,4 +23,4 @@ export * as check from "./check";
 
 export * from "./util"
 
-export const hook = { before, after };
+export const hook = { before, after, run };

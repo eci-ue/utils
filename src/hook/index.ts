@@ -5,7 +5,7 @@
 
 export type HookFunction = (...args: any[]) => void | undefined | Boolean | Promise<boolean>;
 
-const hook = function(hookFunctionList: HookFunction[]) {
+const hook = function(hookFunctionList: HookFunction[] | HookFunction[][]) {
   const list: HookFunction[] = [];
   for (const item of hookFunctionList) {
     if (item && typeof item === "function") {
@@ -39,10 +39,10 @@ export const run = function(hookFunctionList: HookFunction | HookFunction[] = []
 }
 
 
-export const before = function(...args: HookFunction[]) {
+export const before = function(...args: HookFunction[] | HookFunction[][]) {
   return hook(args);
 }
 
-export const after = function(...args: HookFunction[]) {
+export const after = function(...args: HookFunction[] | HookFunction[][]) {
   return hook(args.reverse());
 }
