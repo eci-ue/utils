@@ -14,7 +14,14 @@ dayjs.extend(utc);
 
 let Offset = 0;
 export const getOffset = () => Offset;
-export const setOffset = (value: number = 0) => Offset = value;
+export const setOffset = (value: number = 0) => {
+  const tmp = Number(value);
+  if (isNaN(tmp)) {
+    Offset = 0;
+  } else {
+    Offset = tmp;
+  }
+};
 
 export type DateValue = string | number | Date | Dayjs;
 
