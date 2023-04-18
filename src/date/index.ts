@@ -27,10 +27,16 @@ export type DateValue = string | number | Date | Dayjs;
 
 export enum Template {
   date = "YYYY-MM-DD",
-  value = "YYYY-MM-DD HH:mm:ss"
+  value = "YYYY-MM-DD HH:mm",
+  YYYYMMDD = "YYYY-MM-DD",
+  YYYYMMDDhhmm = "YYYY-MM-DD HH:mm",
+  YYYYMMDDhhmmss = "YYYY-MM-DD HH:mm:ss",
 }
 
-export const toDate = function(value: DateValue, template?: string): Date {
+export const toDate = function(value?: DateValue, template?: string): Date {
+  if (!value) {
+    return toDate(Date.now(), template);
+  }
   if (dayjs.isDayjs(value)) {
     // @ts-ignore
     return value.toDate();
@@ -46,18 +52,17 @@ export const toDate = function(value: DateValue, template?: string): Date {
   }
   if (/^\d+-\d+-\d+\s+\d+:\d+:\d+\s?$/.test(String(value))) {
     // 判断年月日 时分秒
-    return dayjs.utc(value, Template.value).toDate();
+    return dayjs.utc(value, Template.YYYYMMDDhhmmss).toDate();
   }
   if (/^\d+-\d+-\d+T\d+:\d+:\d+\s?$/i.test(String(value))) {
     // 判断年月日T时分秒
-    return dayjs.utc(value, Template.value).toDate();
+    return dayjs.utc(value, Template.YYYYMMDDhhmmss).toDate();
   }
   if (/^\d+-\d+-\d+\s?$/) {
     // 判断年月日
-    return dayjs.utc(value, Template.date).toDate();
+    return dayjs.utc(value, Template.YYYYMMDD).toDate();
   }
   return dayjs.utc(value, template).toDate();
-  
 }
 
 /**
@@ -65,13 +70,13 @@ export const toDate = function(value: DateValue, template?: string): Date {
  * @param value  时间
  * @param format 格式化格式
  */
-export const __format = function(value?: DateValue | null | undefined, template: string | Template = Template.value): string {
+export const __format = function(value?: DateValue | null | undefined, template: string | Template = Template.YYYYMMDDhhmmss): string {
   if (typeof value === "object" && dayjs.isDayjs(value)) {
     // @ts-ignore
-    return typeof template === "string" ? value.format(template) : value.format(Template.value);
+    return typeof template === "string" ? value.format(template) : value.format(Template.YYYYMMDDhhmmss);
   }
   const date = dayjs(toDate(value || new Date()));
-  return __format(date, typeof template === "string" ? template : Template.value);
+  return __format(date, template);
 }
 
 /**
@@ -79,23 +84,35 @@ export const __format = function(value?: DateValue | null | undefined, template:
  * @param value 时间
  * 为 true 时等于 YYYY-MM-DD
  * 为 字符串类型时为指定格式
- * 默认为 YYYY-MM-DD hh:mm:ss
+ * 默认为 YYYY-MM-DD hh:mm
  * @param formatDate
  */
-export const _format = function(value: DateValue, formatDate?: boolean | string) {
+export const _format = function(value?: DateValue, formatDate?: boolean | string) {
   let template: string;
-  if (typeof formatDate === "boolean" && formatDate) {
-    template = Template.date;
+  if (formatDate && typeof formatDate === "boolean") {
+    template = Template.YYYYMMDD; // 年月日
   } else if (typeof formatDate === "string" && formatDate.trim().length > 0) {
     template = formatDate;
   } else {
-    template = Template.value;
+    template = Template.YYYYMMDDhhmm;
   }
-  return {
-    template,
-    timezone: Offset,
-    date: dayjs.utc(toDate(value, template)),
+  class DateUnit {
+    template: string = template;
+    timezone: number = Offset;
+    date: Dayjs = dayjs.utc(toDate(value, Template.YYYYMMDDhhmmss));
+    add (value?: number) {
+      this.date = this.date.add(value || this.timezone, "m");
+      return this;
+    }
+    subtract (value?: number) {
+      this.date = this.date.subtract(value || this.timezone, "m");
+      return this;
+    }
+    format (template?: string) {
+      return this.date.format(template || this.template);
+    }
   }
+  return new DateUnit();
 }
 
 /**
@@ -109,16 +126,16 @@ export const _format = function(value: DateValue, formatDate?: boolean | string)
  * @param formatDate 
  * @returns string
  */
-export const format = function(value: DateValue, formatDate?: boolean | string): string {
+export const format = function(value?: DateValue, formatDate?: boolean | string): string {
   if (typeof formatDate === "boolean" && formatDate === false) {
     return __format(value);
   }
   const data = _format(value, formatDate);
-  if (formatDate) {
+  if (formatDate && typeof formatDate === "boolean") {
     // 只需要年月日数据时不进行时区转换
-    return data.date.format(data.template);
+    return data.format();
   }
-  return data.date.add(data.timezone, "m").format(data.template);
+  return data.add().format();
 }
 
 /**
@@ -127,13 +144,17 @@ export const format = function(value: DateValue, formatDate?: boolean | string):
  * @param formatDate 提交格式, 为 true 时等于 YYYY-MM-DD 默认为 YYYY-MM-DD hh:mm:ss
  * @returns string
  */
-export const formatSubtract = function(value: DateValue, formatDate?: boolean) {
-  const data = _format(value, formatDate);
-  if (formatDate) {
-    // 只需要年月日数据时不进行时区转换
-    return data.date.format(data.template);  
+export const formatSubtract = function(value?: DateValue, formatDate?: boolean | string) {
+  if (typeof formatDate === "boolean" && formatDate === false) {
+    return __format(value);
   }
-  return data.date.subtract(data.timezone, "m").format(data.template);
+
+  const data = _format(value, formatDate);
+  if (formatDate && typeof formatDate === "boolean") {
+    // 只需要年月日数据时不进行时区转换
+    return data.format();
+  }
+  return data.subtract().format();
 }
 
 // 禁用之前的日期
@@ -164,7 +185,7 @@ export const disabledAfterDate = function(currentDate: DateValue, originDate?: D
     let status = false;
     for(const value of ignore) {
       // 判断日期比较是否相同
-      if (dayjs(toDate(value)).isSame(current, "day")) {
+      if (dayjs(toDate(value, Template.YYYYMMDDhhmmss)).isSame(current, "day")) {
         status = true;
         break;
       }
@@ -174,7 +195,7 @@ export const disabledAfterDate = function(currentDate: DateValue, originDate?: D
     }
   }
   if (originDate) {
-    return dayjs(toDate(originDate)).isBefore(current, "day");
+    return dayjs(toDate(originDate, Template.YYYYMMDDhhmmss)).isBefore(current, "day");
   }
   return dayjs().isBefore(current, "day");
 }

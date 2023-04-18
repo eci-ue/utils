@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
+import { date } from "../src/index";
 
 </script>
 
 <template>
-  <div>
-  </div>
+  <div>{{ date.format() }}</div>
 </template>
