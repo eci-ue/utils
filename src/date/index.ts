@@ -154,7 +154,7 @@ export const formatSubtract = function(value?: DateValue, formatDate?: boolean |
     // 只需要年月日数据时不进行时区转换
     return data.format();
   }
-  return data.subtract().format();
+  return data.subtract().format(Template.YYYYMMDDhhmmss);
 }
 
 // 禁用之前的日期
