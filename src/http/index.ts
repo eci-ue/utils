@@ -11,7 +11,7 @@ import { useAsyncState } from "@vueuse/core";
 import type { UseAsyncStateOptions, UseAsyncStateReturn } from "@vueuse/core";
 
 interface UseStateResult<Data, Params extends any[], Shallow extends boolean = true> extends UseAsyncStateReturn<Data, Params, Shallow>{
-  setState?: (value: Data) => void
+  setState: (value: Data | object) => void
 }
 
 const listNormalize = function<T>(list: T[], tableId: string = "id") {
@@ -34,7 +34,7 @@ export const data = function<T = any, Shallow extends boolean = true>(
   options?: UseAsyncStateOptions<Shallow>
 ): UseStateResult<T, any, Shallow> {
   const value = useAsyncState<T>(api, (initialState || {}) as any, options as any);
-  const setState = function<V = T>(state: V) {
+  const setState = function(state: T | object) {
     const data = toRaw(value.state.value);
     value.state.value = { ...data, ...state };
   };
