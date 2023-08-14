@@ -4,10 +4,32 @@
  * @description https://github.com/yiminghe/async-validator
  */
 
+import I18n, { LanguageType } from "@ue/i18n";
 import * as _ from "lodash-es";
 import type { RuleObject } from "ant-design-vue/lib/form/interface";
 
 export type Transform = (value: any) => any;
+
+const symbol = [
+  ".", "?", ",", ";", "!", '"', "'",
+  "。", "？", "，", "；", "！", '”'
+];
+export const messageSymbol = function(value?: string): string {
+  let text = _.trim(value || "");
+  if (text && text.length > 0) {
+    text = _.upperFirst(_.toLower(text));
+    const last = text[text.length - 1];
+    if (last && symbol.includes(last)) {
+      return text;
+    }
+    const i18n = I18n();
+    if (i18n.getLanguage() === LanguageType.cn) {
+      return `${text}！`;
+    }
+    return `${text}!`;
+  }
+  return "";
+}
 
 export const text = function(message: string = "Please input", required:boolean = true, transform?: Transform): RuleObject[] {
   return [
