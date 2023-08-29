@@ -55,8 +55,17 @@ export const setfileDownloadUrl = function(value: string): void {
 }
 
 // 拼接文件下载地址
-export const fileDownloadUrl = function(url?: string) {
-  return url ? path.join(downloadPrefix, url) : void 0;
+export const fileDownloadUrl = function(url?: string): string {
+  if (url && /^https?:\/\//i.test(url)) {
+    return url;
+  }
+  if (url && /^\/\//i.test(url)) {
+    return url;
+  }
+  if (url) {
+    return path.join(downloadPrefix, url);
+  }
+  return "";
 }
 
 // 触发浏览器下载
