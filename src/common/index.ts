@@ -70,19 +70,28 @@ export const fileDownloadUrl = function(url?: string): string {
 
 // 触发浏览器下载
 export const downloadFile = function(url?: string, name?: string): void {
+  // if (url) {
+  //   // 多文件同时下载，最好和网页保持一个相同域名
+  //   // 前端服务器使用 Nginx 部署，nginx 监听 /download 路径进行反代理
+  //   const a = document.createElement("a");
+  //   // initEvent 已不推荐使用
+  //   // 后期如遇到问题请参考 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/Event
+  //   const event = document.createEvent("MouseEvents");
+  //   event.initEvent("click", false, false);
+  //   a.href = url;
+  //   if (name) {
+  //     a.download = name;
+  //   }
+  //   a.dispatchEvent(event);
+  // }
   if (url) {
-    // 多文件同时下载，最好和网页保持一个相同域名
-    // 前端服务器使用 Nginx 部署，nginx 监听 /download 路径进行反代理
-    const a = document.createElement("a");
-    // initEvent 已不推荐使用
-    // 后期如遇到问题请参考 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/Event
-    const event = document.createEvent("MouseEvents");
-    event.initEvent("click", false, false);
-    a.href = url;
+    const res = document.createElement("iframe");
+    res.src = url;
+    res.style.display = "none";
+    res.setAttribute("class", "hidden");
     if (name) {
-      a.download = name;
+      res.name = name;
     }
-    a.dispatchEvent(event);
   }
 }
 
