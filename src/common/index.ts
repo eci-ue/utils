@@ -76,11 +76,7 @@ export const downloadFile = function(url?: string, name?: string): void {
     const res = document.createElement("iframe");
     res.src = url;
     res.style.display = "none";
-    res.setAttribute("class", "hidden");
-    if (name) {
-      res.name = name;
-    }
-    body.appendChild(body);
+    body.appendChild(res);
   } else if (url) {
     // 使用 a 标签并模拟点击
     const a = document.createElement("a");
