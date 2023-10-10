@@ -59,7 +59,7 @@ export const fileDownloadUrl = function(url?: string): string {
     return url;
   }
   // 拼接 Blob 地址
-  if (url && /^\/?driveg\//i) {
+  if (url && /^\/?driveg\//i.test(url)) {
     return "https://ecigdpr.blob.core.windows.net/ecigdpr" + path.join("/", url);
   }
   // 拼接 OSS 地址
