@@ -48,11 +48,7 @@ export const toNumberCash = function (value: string | number = 0, unit = "", pre
 };
 
 
-let downloadPrefix = "/download";
-
-export const setfileDownloadUrl = function(value: string): void {
-  downloadPrefix = value;
-}
+export const setfileDownloadUrl = function(): void {}
 
 // 拼接文件下载地址
 export const fileDownloadUrl = function(url?: string): string {
@@ -62,8 +58,13 @@ export const fileDownloadUrl = function(url?: string): string {
   if (url && /^\/\//i.test(url)) {
     return url;
   }
+  // 拼接 Blob 地址
+  if (url && /^\/?driveg\//i) {
+    return "https://ecigdpr.blob.core.windows.net/ecigdpr" + path.join("/", url);
+  }
+  // 拼接 OSS 地址
   if (url) {
-    return path.join(downloadPrefix, url);
+    return path.join("/download", url);
   }
   return "";
 }
